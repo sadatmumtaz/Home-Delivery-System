@@ -1,0 +1,103 @@
+DROP DATABASE IF EXISTS ds;
+CREATE DATABASE ds;
+
+
+USE ds;
+
+
+DROP TABLE IF EXISTS addresses;
+CREATE TABLE addresses (
+address_id INT NOT NULL AUTO_INCREMENT, 
+city varchar(50),
+province varchar(50),
+street varchar(50),
+PRIMARY KEY ( address_id )
+);
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+user_id INT NOT NULL AUTO_INCREMENT,
+user_type varchar(50),
+first_name varchar(50),
+last_name varchar(50),
+username varchar(50),
+email varchar(50),
+password varchar(50),
+dateRegistered datetime,
+address_id INT,
+FOREIGN KEY (address_id) REFERENCES addresses(address_id),
+PRIMARY KEY ( user_id )
+);
+
+DROP TABLE IF EXISTS customers;
+CREATE table customers (
+customer_id INT NOT NULL AUTO_INCREMENT,
+user_id INT NOT NULL, 
+totalSpent float,
+PRIMARY KEY (customer_id),
+FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+DROP TABLE IF EXISTS drivers;
+CREATE table drivers (
+driver_id INT NOT NULL AUTO_INCREMENT,
+user_id INT NOT NULL, 
+cnic varchar(50),
+availability varchar(50),
+total_deliveries INT,
+PRIMARY KEY (driver_id),
+FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+DROP TABLE IF EXISTS driver_complaints;
+CREATE TABLE driver_complaints (
+complaint_id INT NOT NULL AUTO_INCREMENT,
+customer_id INT NOT NULL,
+driver_id int NOT NULL,
+complaint varchar(50),
+PRIMARY KEY (complaint_id),
+FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+FOREIGN KEY (driver_id) REFERENCES drivers(driver_id)
+);
+
+DROP TABLE IF EXISTS foods;
+CREATE TABLE foods (
+food_id INT NOT NULL AUTO_INCREMENT,
+price float NOT NULL,
+category varchar(50),
+description varchar(50),
+PRIMARY KEY ( food_id )
+);
+
+DROP TABLE IF EXISTS orders;
+CREATE TABLE orders (
+order_id INT NOT NULL AUTO_INCREMENT,
+food_id INT NOT NULL,
+customer_id INT NOT NULL,
+driver_id INT,
+quantity INT NOT NULL, 
+status varchar(50),
+PRIMARY KEY (order_id),
+FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+FOREIGN KEY (driver_id) REFERENCES drivers(driver_id),
+FOREIGN KEY (food_id) REFERENCES foods(food_id)
+);
+
+DROP TABLE IF EXISTS reviews;
+CREATE TABLE reviews (
+review_id INT NOT NULL AUTO_INCREMENT,
+customer_id INT NOT NULL,
+food_id INT NOT NULL,
+review varchar(50),
+PRIMARY KEY (review_id),
+FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+FOREIGN KEY (food_id) REFERENCES foods(food_id)
+);
+
+
+SELECT u.first_name, c.customer_id, o.order_id, a.city FROM orders o JOIN customers c USING (customer_id) JOIN users u USING (user_id) JOIN addresses a USING (address_id);
+
+SELECT u.first_name, c.customer_id, o.order_id, a.city, a.street, o.status FROM orders o JOIN customers c USING (customer_id) JOIN users u USING (user_id) JOIN addresses a USING (address_id);SELECT u.first_name, c.customer_id, o.order_id, a.city, a.street, o.status FROM orders o JOIN customers c USING (customer_id) JOIN users u USING (user_id) JOIN addresses a USING (address_id) WHERE o.driver_id_id=1 AND o.status= 'no';
+
+SELECT u.first_name, c.customer_id, o.order_id, a.city, a.street, o.status FROM orders o JOIN customers c USING (customer_id) JOIN users u USING (user_id) JOIN addresses a USING (address_id) WHERE o.driver_id_id=1 AND o.status= 'no';
+$sql = "SELECT u.first_name, c.customer_id, o.order_id, a.city, a.street, o.status FROM orders o JOIN customers c USING (customer_id) JOIN users u USING (user_id) JOIN addresses a USING (address_id) WHERE o.driver_id=1 AND o.status= \'no\';";
